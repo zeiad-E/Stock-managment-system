@@ -1,50 +1,30 @@
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/sqlite/User');
+const { dbSqlite } = require('../config/db');
+require('dotenv').config();
 
-const SECRET_KEY = process.env.SECRET_KEY || 'fallback-secret-change-in-prod';
+const SECRET_KEY = process.env.SECRET_KEY || 'fallback-secret';
 
 exports.register = async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        if (!username || !password) {
-            return res.status(400).json({ error: 'Username and password are required' });
-        }
+    const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
 
-        const existingUser = await User.findByUsername(username);
-        if (existingUser) {
-            return res.status(400).json({ error: 'Username already exists' });
-        }
-
-        const user = await User.create({ username, password });
-        const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: '24h' });
-        res.status(201).json({ token });
-    } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ error: 'Failed to register user' });
-    }
+    const hashed = await bcrypt.hash(password, 10);
+    dbSqlite.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashed], function (err) {
+        if (err) return res.status(400).json({ error: 'Username already exists' });
+        res.status(201).json({ message: 'User registered' });
+    });
 };
 
-exports.login = async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        if (!username || !password) {
-            return res.status(400).json({ error: 'Username and password are required' });
-        }
+exports.login = (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ error: 'Credentials required' });
 
-        const user = await User.findByUsername(username);
-        if (!user) {
+    dbSqlite.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
+        if (err || !row || !(await bcrypt.compare(password, row.password))) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
-
-        const isMatch = await User.comparePassword(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
         const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: '24h' });
         res.json({ token });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ error: 'Login failed' });
-    }
+    });
 };
