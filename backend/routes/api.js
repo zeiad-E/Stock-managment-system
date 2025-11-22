@@ -39,8 +39,16 @@ router.get('/stock/alerts/expiring-soon', verifyToken, stockController.getExpiri
 
 // --- Transactions (Sell) ---
 router.post('/customer-bills/sell', verifyToken, transController.createSale);
+// NEW: Supplier Bill Route
+router.post('/supplier-bills/buy', verifyToken, transController.createPurchase);
 
 // --- Returns (The Fixed API) ---
 router.post('/returns', verifyToken, returnController.createReturn);
+
+
+// NEW: Bill Lists (History)
+router.get('/customer-bills/list', verifyToken, transController.getCustomerBills);
+router.get('/supplier-bills/list', verifyToken, transController.getSupplierBills);
+
 
 module.exports = router;

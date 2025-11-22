@@ -1,0 +1,184 @@
+.stockContainer {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f9fafb;
+}
+
+.stockHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.stockTitle {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px 0;
+}
+
+.stockSubtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.addStockBtn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.addStockBtn:hover {
+    background-color: #1d4ed8;
+}
+
+.filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.searchInput {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 12px;
+    color: #9ca3af;
+}
+
+.searchInput input {
+    width: 100%;
+    padding: 10px 10px 10px 36px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.stockList{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.stockListHr{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9fafb;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #dbdcdf;
+}
+
+.StockHrChild{
+    display: flex;
+    width: calc(100% / 6) !important;  /* 6 columns */
+    justify-content: center;
+}
+
+.sortIcon {
+    margin-left: 8px;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.stockListRow{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 30px;
+    border: 1px solid #eaebeb;
+    height: 80px;
+}
+
+.stockListChildItem{
+    display: flex;
+    width: calc(100% / 6) !important;  /* 6 columns */
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.stockListFirstChildItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+.stockIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stockName {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.stockDescription {
+    font-size: 10px;
+    color: #6b7280;
+}
+
+.batchNumber {
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.quantity {
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.expiryDate {
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.notes {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.actionIcons {
+    display: flex;
+    gap: 16px;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.actionIcons svg:hover {
+    color: #1f2937;
+}

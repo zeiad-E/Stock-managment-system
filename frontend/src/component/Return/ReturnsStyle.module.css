@@ -1,0 +1,130 @@
+.returnsContainer {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f9fafb;
+}
+
+.returnsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.returnsTitle {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px 0;
+}
+
+.returnsSubtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.returnsForm {
+    background-color: #ffffff;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.formGroup {
+    margin-bottom: 16px;
+}
+
+.formGroup label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.formGroup select,
+.formGroup input,
+.formGroup textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.formGroup textarea {
+    height: 80px;
+}
+
+.itemsSection {
+    margin-bottom: 24px;
+}
+
+.itemsSection h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 16px;
+}
+
+.itemRow {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: center;
+}
+
+.itemRow select,
+.itemRow input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.removeIcon {
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.addItemBtn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.addItemBtn:hover {
+    background-color: #1d4ed8;
+}
+
+.submitBtn {
+    background-color: #16a34a;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.submitBtn:hover {
+    background-color: #15803d;
+}
