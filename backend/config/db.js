@@ -23,6 +23,7 @@ const dbSqlite = new sqlite3.Database('database.db', (err) => {
 // ========================
 const connectMongo = async () => {
     // Replace with your actual connection string
+    // const MONGO_URI = `mongodb://3abasst:${process.env.DB_PASSWORD}@cluster0.rdezj9y.mongodb.net/inventoryDB?retryWrites=true&w=majority`;
     const MONGO_URI = `mongodb+srv://3abasst:${process.env.DB_PASSWORD}@cluster0.rdezj9y.mongodb.net/inventoryDB?retryWrites=true&w=majority`;
     
     try {

@@ -32,3 +32,24 @@ exports.searchCustomers = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+
+// backend/controllers/customerController.js
+exports.deleteCustomer = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedCustomer = await Customer.findByIdAndDelete(id);
+        
+        if (!deletedCustomer) {
+            return res.status(404).json({ message: "Customer not found" });
+        }
+        
+        res.json({ message: "Customer deleted successfully", deletedCustomer });
+    } catch (err) {
+        console.error('Delete customer error:', err);
+        res.status(500).json({ 
+            message: "Error deleting customer",
+            error: err.message 
+        });
+    }
+};

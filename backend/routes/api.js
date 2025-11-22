@@ -26,10 +26,11 @@ router.delete('/products/delete/:id', verifyToken, productController.deleteProdu
 router.post('/customers/create', verifyToken, customerController.createCustomer);
 router.get('/customers/list', verifyToken, customerController.listCustomers);
 router.get('/customers/search', verifyToken, customerController.searchCustomers);
-
+router.delete('/customers/delete/:id', verifyToken, customerController.deleteCustomer);
 // --- Suppliers ---
 router.post('/suppliers/create', verifyToken, supplierController.createSupplier);
 router.get('/suppliers/list', verifyToken, supplierController.listSuppliers);
+router.delete('/suppliers/delete/:id', verifyToken, supplierController.deleteSupplier); // Add this line
 
 // --- Stock ---
 router.get('/stock/batches/list', verifyToken, stockController.listBatches);

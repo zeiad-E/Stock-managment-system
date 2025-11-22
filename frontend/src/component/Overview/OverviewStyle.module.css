@@ -1,0 +1,620 @@
+/* Base container */
+.overviewContainer {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #e5e7eb;
+}
+
+/* Header styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    width: calc(100% + 40px);
+    height: 60px;
+    margin: -24px;
+    /* margin-right: -30px !important; */
+    margin-bottom: 24px;
+    padding: 0 24px;
+    border-radius: 5px;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.notification {
+    position: relative;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.notification:hover {
+    color: #333;
+}
+
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4d4f;
+    color: white;
+    border-radius: 10px;
+    min-width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+}
+
+.userIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    cursor: pointer;
+}
+
+/* Welcome section */
+.welcomeSection {
+    background: linear-gradient(135deg, #ff0000 0%, #1d4ed8 100%);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.welcomeSection h1 {
+    font-size: 32px;
+    color: #1a1a1a;
+    margin: 0 0 12px 0;
+}
+
+.welcomeSection p {
+    color: #ffffff;
+    font-size: 16px;
+    margin: 0 0 32px 0;
+}
+
+.highlight {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.cardContainer {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+/* Stats card */
+.statsCard {
+    min-width: 220px;
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 32px;
+    max-width: 240px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.statsIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: #e6f7ff;
+    color: #1890ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    font-size: 20px;
+}
+
+.statsNumber {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.2;
+}
+
+.statsLabel {
+    font-size: 14px;
+    color: #8c8c8c;
+    font-weight: 400;
+}
+
+.statsContent h5 {
+    font-size: 12px;
+    color: rgb(34 197 94);
+    background-color: transparent !important;
+}
+
+.dollar {
+    background-color: rgb(220 252 231);
+    color: #228f48;
+}
+
+.clock {
+    background-color: #ffedd5;
+    color: #ff8f00 !important;
+}
+
+.bell {
+    background-color: #f3e8ff;
+    color: #9a55e4 !important;
+}
+
+/* Buttons */
+.actionButtons {
+    display: flex;
+    gap: 16px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    gap: 8px;
+}
+
+.primaryBtn {
+    background-color: #1890ff;
+    color: white;
+}
+
+.primaryBtn:hover {
+    background-color: #40a9ff;
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.secondaryBtn {
+    background-color: white;
+    color: #1890ff;
+    border: 1px solid #d9d9d9;
+}
+
+.secondaryBtn:hover {
+    border-color: #1890ff;
+    background-color: rgba(24, 144, 255, 0.04);
+}
+
+/* Projects header */
+.projectsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.projectsHeader h3 {
+    font-size: 20px;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.viewAllLink {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #1890ff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.viewAllLink:hover {
+    color: #40a9ff;
+}
+
+.viewAllLink svg {
+    font-size: 12px;
+}
+
+/* Project Section */
+.projectSection {
+    margin-top: 24px;
+}
+
+.projectGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 16px;
+}
+
+.projectCard {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.projectCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.projectHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.projectIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.projectActions {
+    position: relative;
+}
+
+.actionButton {
+    background: none;
+    border: none;
+    color: #8c8c8c;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.actionButton:hover {
+    background-color: #f5f5f5;
+    color: #1a1a1a;
+}
+
+.projectTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+}
+
+.projectDescription {
+    font-size: 14px;
+    color: #8c8c8c;
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+    min-height: 42px;
+}
+
+.projectMeta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+.deadline {
+    color: #8c8c8c;
+}
+
+.progress {
+    font-weight: 500;
+}
+
+.progressBar {
+    height: 6px;
+    background-color: #f5f5f5;
+    border-radius: 3px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    border-radius: 3px;
+}
+
+.teamMembers {
+    display: flex;
+    gap: 8px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #1890ff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .projectGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .cardContainer {
+        overflow-x: auto;
+        padding-bottom: 16px;
+        margin: 0 -16px 16px -16px;
+        padding: 0 16px 16px;
+    }
+
+    .cardContainer::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .statsCard {
+        min-width: 200px;
+    }
+}
+
+/*Chart Section*/
+.chartSection {
+    display: flex;
+    gap: 20px;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 500px;
+}
+
+.chartSection div {
+    width: 45%;
+    height: 400px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+
+}
+
+.chartSection div :nth-child(1) {
+
+    width: 80%;
+    height: 80%;
+    box-shadow: none;
+}
+
+
+
+
+.currentProjects {
+    margin-top: 30px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+    /* Add horizontal scroll for small screens */
+}
+
+.projectsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.newProjectBtn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.projectsTable {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    /* Ensure table has a minimum width */
+}
+
+.projectsTable th {
+    text-align: left;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.projectsTable td {
+    padding: 12px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+}
+
+.projectInfo .projectName {
+    font-weight: 600;
+    color: #111827;
+    word-break: break-word;
+}
+
+.projectInfo .projectDesc {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.clientInfo {
+    min-width: 120px;
+}
+
+.clientInfo small {
+    font-size: 12px;
+    color: #6b7280;
+    word-break: break-word;
+}
+
+.status {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.inProgress {
+    background: #e0f2fe;
+    color: #2563eb;
+}
+
+.completed {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.review {
+    background: #fef9c3;
+    color: #d97706;
+}
+
+.progressWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 100px;
+}
+
+.progressBarTrack {
+    width: 80px;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressBarFill {
+    height: 100%;
+    border-radius: 4px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.actionIcon {
+    cursor: pointer;
+}
+
+.summaryStats {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.summaryCard {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    min-width: 0;
+    /* Prevent flex item overflow */
+}
+
+.iconWrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px auto;
+    font-size: 18px;
+}
+
+.iconWrapper.blue {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.iconWrapper.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.iconWrapper.purple {
+    background: #f3e8ff;
+    color: #8b5cf6;
+}
+
+.summaryTitle {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.summaryValue {
+    font-size: 24px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.summaryNote {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 4px;
+}

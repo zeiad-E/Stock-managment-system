@@ -1,0 +1,87 @@
+.container {
+    margin: 0;
+    height: 120vh;
+    background: linear-gradient(135deg, #c1dcf5, #f3bece);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .signUpBox{
+    width: 25%;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+.logo{
+  width: 10em;
+  height: 10em;
+  border: none;
+}
+.signUpBox h1{
+  font-size: 2.5em;
+}
+.signUpBox h4{
+  font-size: 1.2em;
+  width: 80%;
+  font-weight: 400;
+  margin-top: -0.5em;
+}
+  .signUpBox form{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+.fullWidth{
+    width: 100%;
+    margin: 0.6em 0;
+}
+.passwordContainer {
+    position: relative;
+    width: 100%;
+}
+
+.eyeButton {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-100%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.signUpBox form input{
+    height: 2em;
+    border-radius: 5px;
+    border:solid 1px #ccc;
+}
+.submitBtn{
+    height: 3.5em;
+    border-radius: 5px;
+    background: linear-gradient(0, #6884dd, #553791);
+    font-size: 1.1em;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.signUpBox form h5{
+  font-weight: 400;
+  margin-top: 0;
+}
+.termsConditions{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: -0.5em;
+  font-weight: 400;
+}

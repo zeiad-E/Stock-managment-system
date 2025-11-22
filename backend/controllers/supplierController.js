@@ -13,3 +13,18 @@ exports.listSuppliers = async (req, res) => {
     const suppliers = await Supplier.find();
     res.json(suppliers);
 };
+
+exports.deleteSupplier = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedSupplier = await Supplier.findByIdAndDelete(id);
+        
+        if (!deletedSupplier) {
+            return res.status(404).json({ message: "Supplier not found" });
+        }
+        
+        res.json({ message: "Supplier deleted successfully", deletedSupplier });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

@@ -1,0 +1,107 @@
+.menu{
+    margin: 0;
+    padding: 0px;
+    padding-top: 20px;
+}
+.title{
+    font-size: 22px;
+    margin: 0px 5px 20px 20px;
+}
+.menu h4 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #6c757d;
+    margin: 20px;
+    /* margin-bottom: 20px;
+    margin-top: 20px; */
+}
+.mainNavigation  {
+    margin: 20px;
+    display: flex;
+    flex-direction:column;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    
+}
+.mainNavigation a {
+    text-decoration: none;
+    color: #4d545a;
+    font-size: 17px;
+    padding:5px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+.mainNavigation a:hover{
+    color: rgba(37, 100, 235, 0.539) !important;
+    background-color: #eee;
+}
+.menuItem:hover {
+    background-color: #e5e7eb;
+    color: #1f2937;
+}
+
+.menuItem.active {
+    background-color: #0c3c8869;
+    color: white;
+    font-weight: 600;
+}
+.active{
+    color: rgb(37 99 235) !important;
+    background-color: #86b8eb60;
+}
+.quickAction{
+    display: flex;
+    flex-direction:column;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #6c757d;
+    margin: 20px;
+}
+.quickAction ul{
+    list-style: none;
+    padding: 5px;
+}
+.quickAction ul li{
+    text-decoration: none;
+    color: #4d545a;
+    font-size: 17px;
+    padding:5px;
+}
+
+.hamburger {
+    display: none; 
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .menu {
+        position: fixed;
+        left: -250px; /* Hidden off-screen */
+        top: 0;
+        height: 100%;
+        width: 250px;
+        background-color: #fff;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        transition: left 0.3s ease;
+        z-index: 1000;
+    }
+
+    .menu.menuOpen {
+        left: 0; /* Shown on-screen */
+    }
+
+    .hamburger {
+        display: block; /* Visible on mobile */
+    }
+}
