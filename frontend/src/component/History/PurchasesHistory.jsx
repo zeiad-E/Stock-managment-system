@@ -8,8 +8,7 @@ import Header from '../Overview/OverviewChars/Header.jsx';  // Assume this is un
 const PurchasesHistory = () => {
     const [purchasesData, setPurchasesData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InplaWFkIiwiaWF0IjoxNzYzODMxMzI1LCJleHAiOjE3NjM5MTc3MjV9.Z4ji_FFgpCTz_3Ly8SCFoa8T2SFGICUk5D8laAitazs";  // Hardcoded for now
-
+const token = localStorage.getItem('token');
     useEffect(() => {
         fetchPurchases();
     }, []);
