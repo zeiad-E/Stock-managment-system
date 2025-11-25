@@ -1,9 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import axios from 'axios';
 import styleFromSignUp from '../sign up/SignUpStyle.module.css';
 import styleFromLogin from './LoginStyle.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faUserPlus, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useLanguage } from '../../context/LanguageContext';
+const copyMap = {
+  en: {
+    title: 'Welcome Back',
+    subtitle: 'Sign in to your Stock Management account',
+    emailLabel: 'Email Address',
+    emailPlaceholder: 'Enter your Email Address',
+    passwordLabel: 'Password',
+    passwordPlaceholder: 'Enter your password',
+    rememberMe: 'Remember me',
+    submit: 'Sign In',
+    noAccount: "Don't have an account?",
+    signupLink: 'Sign up here',
+    requiredError: 'Username and password are required',
+    success: 'Login successful!',
+    failure: 'Login failed',
+  },
+  ar: {
+    title: 'مرحباً بعودتك',
+    subtitle: 'سجّل الدخول إلى حساب إدارة المخزون الخاص بك',
+    emailLabel: 'البريد الإلكتروني',
+    emailPlaceholder: 'أدخل بريدك الإلكتروني',
+    passwordLabel: 'كلمة المرور',
+    passwordPlaceholder: 'أدخل كلمة المرور',
+    rememberMe: 'تذكرني',
+    submit: 'تسجيل الدخول',
+    noAccount: 'لا تملك حساباً؟',
+    signupLink: 'سجّل هنا',
+    requiredError: 'اسم المستخدم وكلمة المرور مطلوبان',
+    success: 'تم تسجيل الدخول بنجاح!',
+    failure: 'فشل تسجيل الدخول',
+  },
+};
+
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
@@ -22,13 +56,15 @@ export default function Login() {
     const [token, setToken] = useState(localStorage.getItem('token') || '');
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
     const [loading, setLoading] = useState(false); 
+    const { language } = useLanguage();
+    const copy = useMemo(() => copyMap[language], [language]);
 
     // Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage('');
     if (!username || !password) {
-      setError('Username and password are required');
+      setError(copy.requiredError);
       return;
     }
 
@@ -41,10 +77,10 @@ export default function Login() {
       // notify other components in same tab
       window.dispatchEvent(new Event('storage'));
       setError(null);
-      setMessage('Login successful!');
+      setMessage(copy.success);
     } catch (err) {
-      setError('Login failed');
-      setMessage('Login failed');
+      setError(copy.failure);
+      setMessage(copy.failure);
       console.error(err);
     }
   };
@@ -56,24 +92,24 @@ export default function Login() {
        <div className={styleFromSignUp.signUpBox} style={{padding: '0'}}>
         {/* <img className={styleFromLogin.logo} src={img} alt="" /> */}
         <div className={styleFromLogin.loginHeader}>
-        <h1> Welcome Back</h1>
-        <h4>Sign in to your Pet Detection account</h4>
+        <h1>{copy.title}</h1>
+        <h4>{copy.subtitle}</h4>
         </div>
 
         <form onSubmit={handleLogin}>
          
           <label htmlFor="" className={styleFromSignUp.signUpLable}>
-            <FontAwesomeIcon icon={faEnvelope} styleFromSignUp={{ marginRight: '5px' ,color:'gray'}} /> Email Address
+            <FontAwesomeIcon icon={faEnvelope} styleFromSignUp={{ marginRight: '5px' ,color:'gray'}} /> {copy.emailLabel}
           </label>
-          <input type="email" value={username} onChange={(e)=>setUsername(e.target.value)} className={styleFromSignUp.fullWidth} placeholder="Enter your Email Address" />
+          <input type="email" value={username} onChange={(e)=>setUsername(e.target.value)} className={styleFromSignUp.fullWidth} placeholder={copy.emailPlaceholder} />
           <label htmlFor="" className={styleFromSignUp.signUpLable}>
-            <FontAwesomeIcon icon={faLock} styleFromSignUp={{ marginRight: '5px' ,color:'gray'}} /> Password
+            <FontAwesomeIcon icon={faLock} styleFromSignUp={{ marginRight: '5px' ,color:'gray'}} /> {copy.passwordLabel}
           </label>
           <div className={styleFromSignUp.passwordContainer}>
             <input 
               type={showPassword ? "text" : "password"} 
               className={styleFromSignUp.fullWidth} 
-              placeholder="Enter your password" value={password} onChange={(e)=>setPassword(e.target.value)} 
+              placeholder={copy.passwordPlaceholder} value={password} onChange={(e)=>setPassword(e.target.value)} 
             />
             <button 
               type="button" 
@@ -88,12 +124,12 @@ export default function Login() {
           </div>
           <div className={styleFromSignUp.termsConditions}>
           <input type='checkbox'/>
-          <label htmlFor="">remember me</label>
+          <label htmlFor="">{copy.rememberMe}</label>
           </div>
             <button  className={`${styleFromSignUp.fullWidth} ${styleFromLogin.submitBtn}`} type="submit">
-              <FontAwesomeIcon icon={faUserPlus} styleFromSignUp={{ marginRight: '5px', color: '#fff' }} /> Sign In
+              <FontAwesomeIcon icon={faUserPlus} styleFromSignUp={{ marginRight: '5px', color: '#fff' }} /> {copy.submit}
             </button>
-            <p>Don't have an account? <a href="">Sign up here</a></p>
+            <p>{copy.noAccount} <a href="">{copy.signupLink}</a></p>
         {error && <p style={{color:'red',marginTop:'0.5rem'}}>{error}</p>}
           {message && !error && <p style={{color:'green',marginTop:'0.5rem'}}>{message}</p>}
         </form>

@@ -128,3 +128,42 @@
 .submitBtn:hover {
     background-color: #15803d;
 }
+
+@media (max-width: 1024px) {
+    .returnsHeader {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .returnsForm {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .returnsContainer {
+        padding: 16px;
+    }
+
+    .itemRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .addItemBtn,
+    .submitBtn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .returnsContainer {
+        padding: 16px 12px;
+    }
+
+    .returnsForm {
+        padding: 16px;
+    }
+}

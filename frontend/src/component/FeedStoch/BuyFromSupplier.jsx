@@ -1,9 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import style from './BuyFromSupplierStyle.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import Header from '../Overview/OverviewChars/Header.jsx';  // Assume this is unchanged
+import Header from '../Overview/OverviewChars/Header.jsx';
+import { useLanguage } from '../../context/LanguageContext';
+
+const copyMap = {
+    en: {
+        headerName: 'Buy from Supplier',
+        pageTitle: 'Buy from Supplier',
+        subtitle: 'Create a purchase bill and update stock',
+        supplierLabel: 'Supplier',
+        supplierPlaceholder: 'Select Supplier',
+        paymentStatus: 'Payment Status',
+        paid: 'Paid',
+        unpaid: 'Unpaid',
+        notes: 'Notes',
+        itemsTitle: 'Items',
+        selectProduct: 'Select Product',
+        quantityPlaceholder: 'Quantity',
+        unitPricePlaceholder: 'Unit Price',
+        expiryPlaceholder: 'Expiry Date',
+        addItem: 'Add Item',
+        submit: 'Submit Purchase',
+        success: 'Purchase successful!',
+        failure: 'Purchase failed!',
+    },
+    ar: {
+        headerName: 'الشراء من المورد',
+        pageTitle: 'الشراء من المورد',
+        subtitle: 'أنشئ فاتورة شراء وحدّث المخزون',
+        supplierLabel: 'المورد',
+        supplierPlaceholder: 'اختر المورد',
+        paymentStatus: 'حالة الدفع',
+        paid: 'مدفوع',
+        unpaid: 'غير مدفوع',
+        notes: 'الملاحظات',
+        itemsTitle: 'العناصر',
+        selectProduct: 'اختر المنتج',
+        quantityPlaceholder: 'الكمية',
+        unitPricePlaceholder: 'سعر الوحدة',
+        expiryPlaceholder: 'تاريخ الانتهاء',
+        addItem: 'إضافة عنصر',
+        submit: 'تأكيد الشراء',
+        success: 'تمت عملية الشراء بنجاح!',
+        failure: 'فشلت عملية الشراء!',
+    },
+};
 
 const BuyFromSupplier = () => {
     const [suppliers, setSuppliers] = useState([]);
@@ -15,6 +59,8 @@ const BuyFromSupplier = () => {
         items: [{ productId: '', quantity: 0, unitPrice: 0, expiryDate: '' }]
     });
 const token = localStorage.getItem('token');
+    const { language } = useLanguage();
+    const copy = useMemo(() => copyMap[language], [language]);
     useEffect(() => {
         fetchSuppliers();
         fetchProducts();
@@ -79,7 +125,7 @@ const token = localStorage.getItem('token');
                     'Content-Type': 'application/json'
                 }
             });
-            alert('Purchase successful!');
+            alert(copy.success);
             // Reset form or redirect
             setFormData({
                 supplierId: '',
@@ -89,62 +135,62 @@ const token = localStorage.getItem('token');
             });
         } catch (err) {
             console.error(err);
-            alert('Purchase failed!');
+            alert(copy.failure);
         }
     };
 
     return (
         <div className={style.buyContainer}>
-            <Header name="Buy from Supplier"/>
+            <Header name={copy.headerName}/>
             <div className={style.buyHeader}>
                 <div>
-                    <h1 className={style.buyTitle}>Buy from Supplier</h1>
-                    <p className={style.buySubtitle}>Create a purchase bill and update stock</p>
+                    <h1 className={style.buyTitle}>{copy.pageTitle}</h1>
+                    <p className={style.buySubtitle}>{copy.subtitle}</p>
                 </div>
             </div>
 
             <form className={style.buyForm} onSubmit={handleSubmit}>
                 <div className={style.formGroup}>
-                    <label>Supplier</label>
+                    <label>{copy.supplierLabel}</label>
                     <select name="supplierId" value={formData.supplierId} onChange={handleChange} required>
-                        <option value="">Select Supplier</option>
+                        <option value="">{copy.supplierPlaceholder}</option>
                         {suppliers.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
                     </select>
                 </div>
 
                 <div className={style.formGroup}>
-                    <label>Payment Status</label>
+                    <label>{copy.paymentStatus}</label>
                     <select name="paymentStatus" value={formData.paymentStatus} onChange={handleChange}>
-                        <option value="paid">Paid</option>
-                        <option value="unpaid">Unpaid</option>
+                        <option value="paid">{copy.paid}</option>
+                        <option value="unpaid">{copy.unpaid}</option>
                     </select>
                 </div>
 
                 <div className={style.formGroup}>
-                    <label>Notes</label>
+                    <label>{copy.notes}</label>
                     <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
                 </div>
 
                 <div className={style.itemsSection}>
-                    <h3>Items</h3>
+                    <h3>{copy.itemsTitle}</h3>
                     {formData.items.map((item, index) => (
                         <div key={index} className={style.itemRow}>
                             <select name="productId" value={item.productId} onChange={(e) => handleItemChange(index, e)} required>
-                                <option value="">Select Product</option>
+                                <option value="">{copy.selectProduct}</option>
                                 {products.map(p => <option key={p._id} value={p._id}>{p.name}</option>)}
                             </select>
-                            <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} placeholder="Quantity" required />
-                            <input type="number" name="unitPrice" value={item.unitPrice} onChange={(e) => handleItemChange(index, e)} placeholder="Unit Price" required />
-                            <input type="date" name="expiryDate" value={item.expiryDate} onChange={(e) => handleItemChange(index, e)} required />
+                            <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} placeholder={copy.quantityPlaceholder} required />
+                            <input type="number" name="unitPrice" value={item.unitPrice} onChange={(e) => handleItemChange(index, e)} placeholder={copy.unitPricePlaceholder} required />
+                            <input type="date" name="expiryDate" value={item.expiryDate} onChange={(e) => handleItemChange(index, e)} aria-label={copy.expiryPlaceholder} required />
                             <FontAwesomeIcon icon={faTrash} className={style.removeIcon} onClick={() => removeItem(index)} />
                         </div>
                     ))}
                     <button type="button" className={style.addItemBtn} onClick={addItem}>
-                        <FontAwesomeIcon icon={faPlus} /> Add Item
+                        <FontAwesomeIcon icon={faPlus} /> {copy.addItem}
                     </button>
                 </div>
 
-                <button type="submit" className={style.submitBtn}>Submit Purchase</button>
+                <button type="submit" className={style.submitBtn}>{copy.submit}</button>
             </form>
         </div>
     );

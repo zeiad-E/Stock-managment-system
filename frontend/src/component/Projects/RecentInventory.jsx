@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./RecentInventory.css";  // Renamed CSS
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBox, faExclamationTriangle, faCheckCircle, faDollarSign } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faExclamationTriangle, faDollarSign } from '@fortawesome/free-solid-svg-icons';
+import { useLanguage } from "../../context/LanguageContext";
 
 const RecentInventory = () => {
     const [totalProducts, setTotalProducts] = useState(0);
     const [lowStock, setLowStock] = useState(0);
     const [expiringSoon, setExpiringSoon] = useState(0);
+    const { language } = useLanguage();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -29,59 +31,75 @@ const RecentInventory = () => {
             .catch(err => console.error(err));
     }, []);
 
+    const summaryCards = useMemo(() => ([
+        {
+            key: 'total',
+            title: language === 'ar' ? 'إجمالي المنتجات' : 'Total Products',
+            icon: faBox,
+            value: totalProducts,
+            status: language === 'ar' ? '↑ +2 هذا الشهر' : '↑ +2 this month',
+            statusClass: '',
+        },
+        {
+            key: 'lowStock',
+            title: language === 'ar' ? 'كميات منخفضة' : 'Low Stock',
+            icon: faExclamationTriangle,
+            value: lowStock,
+            status: language === 'ar' ? '● دون الحد المسموح' : '● Below threshold',
+            statusClass: 'in-progress',
+        },
+        {
+            key: 'expiring',
+            title: language === 'ar' ? 'تنتهي قريبًا' : 'Expiring Soon',
+            icon: faExclamationTriangle,
+            value: expiringSoon,
+            status: language === 'ar' ? 'خلال 30 يومًا' : 'Within 30 days',
+            statusClass: '',
+        },
+        {
+            key: 'value',
+            title: language === 'ar' ? 'القيمة الإجمالية' : 'Total Value',
+            icon: faDollarSign,
+            value: '$??K',
+            status: language === 'ar' ? '↑ +12% عن الشهر الماضي' : '↑ +12% from last month',
+            statusClass: 'success',
+        },
+    ]), [language, totalProducts, lowStock, expiringSoon]);
+
     return (
         <div className="dashboard-container">
             {/* Summary Section */}
             <div className="summary-container">
-                <div className="summary-card">
-                    <div className="summary-header">
-                        <span className="summary-title">Total Products</span>
-                        <FontAwesomeIcon icon={faBox} className="summary-icon" />
+                {summaryCards.map((card) => (
+                    <div className="summary-card" key={card.key}>
+                        <div className="summary-header">
+                            <span className="summary-title">{card.title}</span>
+                            <FontAwesomeIcon icon={card.icon} className="summary-icon" />
+                        </div>
+                        <div className="summary-value">{card.value}</div>
+                        <div className={`summary-status ${card.statusClass}`}>{card.status}</div>
                     </div>
-                    <div className="summary-value">{totalProducts}</div>
-                    <div className="summary-status">↑ +2 this month</div>  {/* Static; update if needed */}
-                </div>
-
-                <div className="summary-card">
-                    <div className="summary-header">
-                        <span className="summary-title">Low Stock</span>
-                        <FontAwesomeIcon icon={faExclamationTriangle} className="summary-icon" />
-                    </div>
-                    <div className="summary-value">{lowStock}</div>
-                    <div className="summary-status in-progress">● Below threshold</div>
-                </div>
-
-                <div className="summary-card">
-                    <div className="summary-header">
-                        <span className="summary-title">Expiring Soon</span>
-                        <FontAwesomeIcon icon={faExclamationTriangle} className="summary-icon" />
-                    </div>
-                    <div className="summary-value">{expiringSoon}</div>
-                    <div className="summary-status">Within 30 days</div>
-                </div>
-
-                <div className="summary-card">
-                    <div className="summary-header">
-                        <span className="summary-title">Total Value</span>
-                        <FontAwesomeIcon icon={faDollarSign} className="summary-icon" />
-                    </div>
-                    <div className="summary-value">$??K</div>  {/* Placeholder; calculate from API if needed */}
-                    <div className="summary-status success">↑ +12% from last month</div>
-                </div>
+                ))}
             </div>
 
             {/* Recent Activities - Kept similar, adapt to inventory if more APIs */}
             <div className="activities-container">
-                <h3 className="activities-header">Recent Inventory Activities</h3>
+                <h3 className="activities-header">
+                    {language === 'ar' ? 'أحدث نشاطات المخزون' : 'Recent Inventory Activities'}
+                </h3>
 
                 <div className="activity-item">
                     <div className="activity-icon blue"><FontAwesomeIcon icon={faBox} /></div>
                     <div className="activity-content">
                         <div className="activity-title">
-                            New product added: <span className="highlight">Super Chips</span>
+                            {language === 'ar' ? 'تمت إضافة منتج جديد:' : 'New product added:'} <span className="highlight">Super Chips</span>
                         </div>
-                        <div className="activity-subtext">Added by admin</div>
-                        <div className="activity-time">2 hours ago</div>
+                        <div className="activity-subtext">
+                            {language === 'ar' ? 'أُضيف بواسطة المشرف' : 'Added by admin'}
+                        </div>
+                        <div className="activity-time">
+                            {language === 'ar' ? 'منذ ساعتين' : '2 hours ago'}
+                        </div>
                     </div>
                 </div>
 

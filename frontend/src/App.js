@@ -15,11 +15,17 @@ import SellToCustomer from './component/Sell/SellToCustomer.jsx';
 import Returns from './component/Return/Returns.jsx';
 import SalesHistory from './component/History/SalesHistory.jsx';
 import PurchasesHistory from './component/History/PurchasesHistory.jsx';
-function App() {
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
+
+const AppContent = () => {
+  const { language } = useLanguage();
+
   return (
     <Router>
-      <div className='model'> 
-        <Menu/>
+      <div className={`model ${language === 'ar' ? 'model-rtl' : 'model-ltr'}`}>
+        <aside className='sidebar'>
+          <Menu/>
+        </aside>
         <div className='content'>
           <Routes>
             <Route path="/" element={<Overview />} />
@@ -39,6 +45,14 @@ function App() {
         </div>
       </div>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
 

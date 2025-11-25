@@ -4,6 +4,8 @@
     max-width: 1200px;
     margin: 0 auto;
     background-color: #e5e7eb;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Header styles */
@@ -23,10 +25,53 @@
     border-radius: 5px;
 }
 
+.brandWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.logoBadge {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background-color: #1c8844;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.siteName {
+    font-size: 22px;
+    font-weight: 700;
+    color: #16a34a;
+    white-space: nowrap;
+}
+
 .headerActions {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.languageSwitch {
+    border: 1px solid #d1d5db;
+    border-radius: 999px;
+    padding: 6px 16px;
+    background-color: white;
+    color: #111827;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.languageSwitch:hover {
+    background-color: #111827;
+    color: #ffffff;
 }
 
 .title {
@@ -34,6 +79,7 @@
     font-weight: 600;
     color: #1a1a1a;
     margin: 0;
+    margin-right: 10px;
 }
 
 .notification {
@@ -105,7 +151,7 @@
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
 /* Stats card */
@@ -119,6 +165,7 @@
     margin-bottom: 32px;
     max-width: 240px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex: 1 1 220px;
 }
 
 .statsIcon {
@@ -172,6 +219,7 @@
 .actionButtons {
     display: flex;
     gap: 16px;
+    flex-wrap: wrap;
 }
 
 .btn {
@@ -394,15 +442,16 @@
 .chartSection {
     display: flex;
     gap: 20px;
-    flex-wrap: nowrap;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 500px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
 }
 
-.chartSection div {
-    width: 45%;
-    height: 400px;
+.chartSection > div {
+    flex: 1 1 380px;
+    min-width: 280px;
+    height: auto;
+    min-height: 320px;
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
@@ -410,11 +459,9 @@
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-
 }
 
-.chartSection div :nth-child(1) {
-
+.chartSection > div :nth-child(1) {
     width: 80%;
     height: 80%;
     box-shadow: none;
@@ -431,6 +478,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     overflow-x: auto;
     /* Add horizontal scroll for small screens */
+    -webkit-overflow-scrolling: touch;
 }
 
 .projectsHeader {
@@ -554,15 +602,6 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-
-    /* Responsive adjustments */
-    @media (max-width: 1024px) {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-    }
 }
 
 .summaryCard {
@@ -617,4 +656,110 @@
     font-size: 13px;
     color: #6b7280;
     margin-top: 4px;
+}
+
+@media (max-width: 1280px) {
+    .overviewContainer {
+        padding: 20px;
+    }
+
+    .header {
+        width: 100%;
+        margin: 0 0 24px 0;
+    }
+}
+
+@media (max-width: 1024px) {
+    .projectsHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .actionButtons {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .btn {
+        flex: 1 1 45%;
+    }
+
+    .summaryStats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .overviewContainer {
+        padding: 16px;
+    }
+
+    .welcomeSection {
+        padding: 24px 20px;
+    }
+
+    .welcomeSection h1 {
+        font-size: 28px;
+    }
+
+    .cardContainer {
+        gap: 16px;
+    }
+
+    .actionButtons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .chartSection > div {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    .projectGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .currentProjects {
+        padding: 16px;
+    }
+
+    .projectsTable {
+        min-width: 600px;
+    }
+
+    .summaryStats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .welcomeSection h1 {
+        font-size: 24px;
+    }
+
+    .welcomeSection p {
+        font-size: 14px;
+    }
+
+    .projectsHeader h3 {
+        font-size: 18px;
+    }
+
+    .newProjectBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .chartSection {
+        gap: 16px;
+    }
+
+    .summaryCard {
+        padding: 16px;
+    }
 }

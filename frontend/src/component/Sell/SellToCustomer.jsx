@@ -1,9 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import style from './SellToCustomerStyle.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import Header from '../Overview/OverviewChars/Header.jsx';  // Assume this is unchanged
+import Header from '../Overview/OverviewChars/Header.jsx';
+import { useLanguage } from '../../context/LanguageContext';
+
+const copyMap = {
+    en: {
+        headerName: 'Sell to Customer',
+        pageTitle: 'Sell to Customer',
+        subtitle: 'Create a sale bill and update stock',
+        customerLabel: 'Customer',
+        customerPlaceholder: 'Select Customer',
+        paymentStatus: 'Payment Status',
+        paid: 'Paid',
+        unpaid: 'Unpaid',
+        notes: 'Notes',
+        itemsTitle: 'Items',
+        selectProduct: 'Select Product',
+        quantityPlaceholder: 'Quantity',
+        salePricePlaceholder: 'Sale Price',
+        addItem: 'Add Item',
+        submit: 'Submit Sale',
+        success: 'Sale successful!',
+        failure: 'Sale failed!',
+    },
+    ar: {
+        headerName: 'البيع للعميل',
+        pageTitle: 'البيع للعميل',
+        subtitle: 'أنشئ فاتورة بيع وحدّث المخزون',
+        customerLabel: 'العميل',
+        customerPlaceholder: 'اختر العميل',
+        paymentStatus: 'حالة الدفع',
+        paid: 'مدفوع',
+        unpaid: 'غير مدفوع',
+        notes: 'الملاحظات',
+        itemsTitle: 'العناصر',
+        selectProduct: 'اختر المنتج',
+        quantityPlaceholder: 'الكمية',
+        salePricePlaceholder: 'سعر البيع',
+        addItem: 'إضافة عنصر',
+        submit: 'تأكيد البيع',
+        success: 'تمت عملية البيع بنجاح!',
+        failure: 'فشلت عملية البيع!',
+    },
+};
 
 const SellToCustomer = () => {
     const [customers, setCustomers] = useState([]);
@@ -15,6 +57,8 @@ const SellToCustomer = () => {
         items: [{ productId: '', quantity: 0, salePrice: 0 }]
     });
     const token = localStorage.getItem('token');
+    const { language } = useLanguage();
+    const copy = useMemo(() => copyMap[language], [language]);
     // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InplaWFkIiwiaWF0IjoxNzYzODMxMzI1LCJleHAiOjE3NjM5MTc3MjV9.Z4ji_FFgpCTz_3Ly8SCFoa8T2SFGICUk5D8laAitazs";  // Hardcoded for now
 
     useEffect(() => {
@@ -81,7 +125,7 @@ const SellToCustomer = () => {
                     'Content-Type': 'application/json'
                 }
             });
-            alert('Sale successful!');
+            alert(copy.success);
             // Reset form or redirect
             setFormData({
                 customerId: '',
@@ -91,61 +135,61 @@ const SellToCustomer = () => {
             });
         } catch (err) {
             console.error(err);
-            alert('Sale failed!');
+            alert(copy.failure);
         }
     };
 
     return (
         <div className={style.sellContainer}>
-            <Header name="Sell to Customer"/>
+            <Header name={copy.headerName}/>
             <div className={style.sellHeader}>
                 <div>
-                    <h1 className={style.sellTitle}>Sell to Customer</h1>
-                    <p className={style.sellSubtitle}>Create a sale bill and update stock</p>
+                    <h1 className={style.sellTitle}>{copy.pageTitle}</h1>
+                    <p className={style.sellSubtitle}>{copy.subtitle}</p>
                 </div>
             </div>
 
             <form className={style.sellForm} onSubmit={handleSubmit}>
                 <div className={style.formGroup}>
-                    <label>Customer</label>
+                    <label>{copy.customerLabel}</label>
                     <select name="customerId" value={formData.customerId} onChange={handleChange} required>
-                        <option value="">Select Customer</option>
+                        <option value="">{copy.customerPlaceholder}</option>
                         {customers.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                     </select>
                 </div>
 
                 <div className={style.formGroup}>
-                    <label>Payment Status</label>
+                    <label>{copy.paymentStatus}</label>
                     <select name="paymentStatus" value={formData.paymentStatus} onChange={handleChange}>
-                        <option value="paid">Paid</option>
-                        <option value="unpaid">Unpaid</option>
+                        <option value="paid">{copy.paid}</option>
+                        <option value="unpaid">{copy.unpaid}</option>
                     </select>
                 </div>
 
                 <div className={style.formGroup}>
-                    <label>Notes</label>
+                    <label>{copy.notes}</label>
                     <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
                 </div>
 
                 <div className={style.itemsSection}>
-                    <h3>Items</h3>
+                    <h3>{copy.itemsTitle}</h3>
                     {formData.items.map((item, index) => (
                         <div key={index} className={style.itemRow}>
                             <select name="productId" value={item.productId} onChange={(e) => handleItemChange(index, e)} required>
-                                <option value="">Select Product</option>
+                                <option value="">{copy.selectProduct}</option>
                                 {products.map(p => <option key={p._id} value={p._id}>{p.name}</option>)}
                             </select>
-                            <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} placeholder="Quantity" required />
-                            <input type="number" name="salePrice" value={item.salePrice} onChange={(e) => handleItemChange(index, e)} placeholder="Sale Price" required />
+                            <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} placeholder={copy.quantityPlaceholder} required />
+                            <input type="number" name="salePrice" value={item.salePrice} onChange={(e) => handleItemChange(index, e)} placeholder={copy.salePricePlaceholder} required />
                             <FontAwesomeIcon icon={faTrash} className={style.removeIcon} onClick={() => removeItem(index)} />
                         </div>
                     ))}
                     <button type="button" className={style.addItemBtn} onClick={addItem}>
-                        <FontAwesomeIcon icon={faPlus} /> Add Item
+                        <FontAwesomeIcon icon={faPlus} /> {copy.addItem}
                     </button>
                 </div>
 
-                <button type="submit" className={style.submitBtn}>Submit Sale</button>
+                <button type="submit" className={style.submitBtn}>{copy.submit}</button>
             </form>
         </div>
     );

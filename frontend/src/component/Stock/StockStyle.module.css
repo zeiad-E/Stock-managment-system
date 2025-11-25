@@ -80,6 +80,9 @@
     justify-content: flex-start;
     align-items: center;
     border-radius: 8px;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 16px;
 }
 
 .stockListHr{
@@ -91,6 +94,7 @@
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #dbdcdf;
+    min-width: 940px;
 }
 
 .StockHrChild{
@@ -115,6 +119,9 @@
     padding: 30px;
     border: 1px solid #eaebeb;
     height: 80px;
+    border-radius: 12px;
+    transition: box-shadow 0.3s ease;
+    min-width: 940px;
 }
 
 .stockListChildItem{
@@ -181,4 +188,102 @@
 
 .actionIcons svg:hover {
     color: #1f2937;
+}
+
+/* Add form */
+.inlineForm {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+}
+
+.formHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.formGroup label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.formGroup textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.secondaryBtn {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.primaryBtn {
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.primaryBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.formError {
+    color: #dc2626;
+    margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+    .stockContainer {
+        padding: 16px;
+    }
 }

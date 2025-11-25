@@ -1,15 +1,17 @@
 .container {
     margin: 0;
-    height: 120vh;
+    min-height: 100vh;
     background: linear-gradient(135deg, #c1dcf5, #f3bece);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 40px 16px;
+    box-sizing: border-box;
   }
   
   .signUpBox{
-    width: 25%;
+    width: min(420px, 100%);
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -84,4 +86,29 @@
   align-items: center;
   margin-top: -0.5em;
   font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .signUpBox {
+    width: 100%;
+    padding: 24px 18px;
+  }
+
+  .signUpBox h1 {
+    font-size: 2rem;
+  }
+
+  .signUpBox form {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .signUpBox {
+    padding: 20px 16px;
+  }
+
+  .signUpBox h1 {
+    font-size: 1.75rem;
+  }
 }

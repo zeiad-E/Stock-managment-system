@@ -1,6 +1,8 @@
 .profileSettingsContainer {
     background-color: #f9fafb;
     padding: 2rem;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 .settingsContent {
@@ -202,4 +204,44 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+@media (max-width: 1024px) {
+    .profileSettingsContainer {
+        padding: 1.5rem;
+    }
+
+    .settingsContent {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .profileSettingsContainer {
+        padding: 1.25rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .formActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .saveButton,
+    .cancelButton {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .profileSettingsContainer {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1.25rem;
+    }
 }

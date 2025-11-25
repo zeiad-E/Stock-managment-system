@@ -34,6 +34,7 @@ router.delete('/suppliers/delete/:id', verifyToken, supplierController.deleteSup
 
 // --- Stock ---
 router.get('/stock/batches/list', verifyToken, stockController.listBatches);
+router.post('/stock/batches/create', verifyToken, stockController.createBatch);
 router.get('/stock/alerts/low-stock', verifyToken, stockController.getLowStock);
 router.get('/stock/alerts/expiring-soon', verifyToken, stockController.getExpiring);
 

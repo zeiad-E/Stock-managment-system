@@ -128,3 +128,42 @@
 .submitBtn:hover {
     background-color: #15803d;
 }
+
+@media (max-width: 1024px) {
+    .sellHeader {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .sellForm {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sellContainer {
+        padding: 16px;
+    }
+
+    .itemRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .addItemBtn,
+    .submitBtn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .sellContainer {
+        padding: 16px 12px;
+    }
+
+    .sellForm {
+        padding: 16px;
+    }
+}

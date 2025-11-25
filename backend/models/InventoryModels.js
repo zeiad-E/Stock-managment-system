@@ -42,6 +42,7 @@ const StockSchema = new mongoose.Schema({
   quantity: { type: Number, required: true },
   unitPrice: Number,
   expiryDate: { type: Date, required: true },
+  notes: String,
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

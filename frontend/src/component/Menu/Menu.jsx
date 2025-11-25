@@ -1,87 +1,227 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import style from './MenuStyle.module.css'
-import { Link } from 'react-router-dom'
+import style from './MenuStyle.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faHouse, 
-  faUser, 
-  faPlus, 
-  faCalendar, 
-  faChartSimple, 
-  faBars, 
   faBox, 
   faWarehouse, 
   faTruck, 
   faUsers, 
+  faUser, 
   faCartShopping, 
   faCashRegister, 
-  faArrowRotateLeft 
+  faArrowRotateLeft,
+  faBars,
+  faTimes,
+  faPlus,
+  faCalendar,
+  faChartColumn
 } from '@fortawesome/free-solid-svg-icons';
+import { useLanguage } from '../../context/LanguageContext';
+
+const getInitialMenuState = () => {
+  if (typeof window !== 'undefined') {
+    return window.innerWidth > 768;
+  }
+  return true;
+};
+
 export default function Menu() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(getInitialMenuState);
+  const { language } = useLanguage();
+  
+  // 1. Create a ref for the Hamburger button too
+  const menuRef = useRef(null);
+  const hamburgerRef = useRef(null); 
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // 2. Check if the click is NOT inside the Menu AND NOT inside the Hamburger button
+      if (
+        menuRef.current && 
+        !menuRef.current.contains(event.target) &&
+        hamburgerRef.current && 
+        !hamburgerRef.current.contains(event.target)
+      ) {
+        if (window.innerWidth <= 768) {
+          setIsMenuOpen(false);
+        }
+      }
+    }
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsMenuOpen(true);
+      } else {
+        setIsMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const sidebarElement = menuRef.current?.closest('.sidebar');
+    if (!sidebarElement) return;
+
+    if (isMenuOpen) {
+      sidebarElement.classList.remove('sidebarCollapsed');
+    } else {
+      sidebarElement.classList.add('sidebarCollapsed');
+    }
+  }, [isMenuOpen]);
+
+  const labels = {
+    en: {
+      title: 'Stock Management System',
+      mainNav: 'MAIN NAVIGATION',
+      quickActions: 'QUICK ACTION',
+      quickItems: {
+        newProject: 'New Project',
+        schedule: 'Schedule',
+        analytics: 'Analytics',
+      },
+      items: {
+        overview: 'Overview',
+        products: 'Products',
+        stock: 'Stock',
+        suppliers: 'Suppliers',
+        customers: 'Customers',
+        profile: 'Profile Setting',
+        buy: 'Buy From Supplier',
+        sell: 'Sell To Customer',
+        returns: 'Returns',
+        salesHistory: 'Sales History',
+        purchasesHistory: 'Purchases History',
+      },
+    },
+    ar: {
+      title: 'نظام إدارة المخزون',
+      mainNav: 'التنقل الرئيسي',
+      quickActions: 'إجراءات سريعة',
+      quickItems: {
+        newProject: 'مشروع جديد',
+        schedule: 'الجدول الزمني',
+        analytics: 'التحليلات',
+      },
+      items: {
+        overview: 'نظرة عامة',
+        products: 'المنتجات',
+        stock: 'المخزون',
+        suppliers: 'الموردون',
+        customers: 'العملاء',
+        profile: 'إعدادات الحساب',
+        buy: 'الشراء من المورد',
+        sell: 'البيع للعميل',
+        returns: 'المرتجعات',
+        salesHistory: 'سجل المبيعات',
+        purchasesHistory: 'سجل المشتريات',
+      },
+    },
+  };
+
+  const t = labels[language];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const navItems = [
+    { to: '/', icon: faHouse, label: t.items.overview },
+    { to: '/projects', icon: faBox, label: t.items.products },
+    { to: '/stock', icon: faWarehouse, label: t.items.stock },
+    { to: '/suppliers', icon: faTruck, label: t.items.suppliers },
+    { to: '/customers', icon: faUsers, label: t.items.customers },
+    { to: '/settings', icon: faUser, label: t.items.profile },
+    { to: '/buy-from-supplier', icon: faCartShopping, label: t.items.buy },
+    { to: '/sell-to-customer', icon: faCashRegister, label: t.items.sell },
+    { to: '/returns', icon: faArrowRotateLeft, label: t.items.returns },
+    { to: '/sales-history', icon: faArrowRotateLeft, label: t.items.salesHistory },
+    { to: '/purchases-history', icon: faArrowRotateLeft, label: t.items.purchasesHistory },
+  ];
+
+  const quickItems = [
+    { icon: faPlus, label: t.quickItems.newProject },
+    { icon: faCalendar, label: t.quickItems.schedule },
+    { icon: faChartColumn, label: t.quickItems.analytics },
+  ];
+
+  const menuClasses = [
+    style.menu,
+    language === 'ar' ? style.menuRtl : '',
+    isMenuOpen ? style.menuOpen : style.menuCollapsed,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const hamburgerPosition =
+    language === 'ar'
+      ? { left: '20px', right: 'auto' } 
+      : { left: 'auto', right: '20px' };
+
   return (
     <>
-      <button className={style.hamburger} onClick={toggleMenu}>
-        <FontAwesomeIcon icon={faBars} />
-      </button>
-      <div className={`${style.menu} ${isMenuOpen ? style.menuOpen : ''}`}>
+      <div
+        ref={hamburgerRef} /* 3. Attach the ref to the hamburger div */
+        className={style.hamburger}
+        onClick={toggleMenu}
+        style={hamburgerPosition}
+        aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={isMenuOpen}
+      >
+        <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} size="lg" />
+      </div>
+      
+      <div ref={menuRef} className={menuClasses}>
+        <div className={style.menuContent}>
+          <h1 className={style.title}>{t.title}</h1>
+          <hr />
+          <h4>{t.mainNav}</h4>
 
-        <h2 className={style.title}>Freelance Dashboard</h2>
-        <hr />
-        <h4>MAIN NAVIGATION</h4>
+          <div className={style.mainNavigation}>
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) => (isActive ? `${style.menuItem} ${style.active}` : style.menuItem)}
+              >
+                <FontAwesomeIcon
+                  icon={item.icon}
+                  style={
+                    language === 'ar'
+                      ? { paddingLeft: '10px' }
+                      : { paddingRight: '10px' }
+                  }
+                />
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
 
-        <div className={style.mainNavigation}>
-            <NavLink to='/' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faHouse} style={{paddingRight: '10px'}}/> Overview
-            </NavLink>
-            <NavLink to='/Projects' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faBox} style={{paddingRight: '10px'}}/> Products
-            </NavLink>
-            <NavLink to='/stock' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faWarehouse} style={{paddingRight: '10px'}}/> Stock
-            </NavLink>
-            <NavLink to='/suppliers' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faTruck} style={{paddingRight: '10px'}}/>   Suppliers
-            </NavLink>
-            <NavLink to='/customers' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faUsers} style={{paddingRight: '10px'}}/>   Customers
-            </NavLink>
-            <NavLink to='/settings' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faUser} style={{paddingRight: '10px'}}/>   Profile Setting
-            </NavLink>
-            <NavLink to='/buy-from-supplier' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faCartShopping} style={{paddingRight: '10px'}}/>   Buy From Supplier
-            </NavLink>
-            <NavLink to='/sell-to-customer' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faCashRegister} style={{paddingRight: '10px'}}/>   Sell To Customer
-            </NavLink>
-            <NavLink to='/returns' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faArrowRotateLeft} style={{paddingRight: '10px'}}/>   Returns
-            </NavLink>
-            <NavLink to='/sales-history' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faArrowRotateLeft} style={{paddingRight: '10px'}}/>   Sales History
-            </NavLink>
-            <NavLink to='/purchases-history' className={({ isActive }) => isActive ? `${style.menuItem} ${style.active}` : style.menuItem}>
-              <FontAwesomeIcon icon={faArrowRotateLeft} style={{paddingRight: '10px'}}/>   Purchases History
-            </NavLink>
-        </div>
-
-            <h4>QUICK ACTION</h4>
-        <div className={style.quickAction}>
+          <h4>{t.quickActions}</h4>
+          <div className={style.quickAction}>
             <ul>
-                <li><FontAwesomeIcon icon={faPlus} />  New Project</li>
-                <li><FontAwesomeIcon icon={faCalendar} />  Schedule</li>
-                <li><FontAwesomeIcon icon={faChartSimple} />  Analytics</li>
+              {quickItems.map((item) => (
+                <li key={item.label}>
+                  <FontAwesomeIcon icon={item.icon} />  {item.label}
+                </li>
+              ))}
             </ul>
+          </div>
         </div>
-    </div>
-
+      </div>
     </>
-  )
-}
+  );
+};
