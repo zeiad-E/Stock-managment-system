@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import style from './OverviewStyle.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MonthlyEarnings from './OverviewChars/MonthlyEarning.jsx';
@@ -18,52 +19,65 @@ import {
 import Header from './OverviewChars/Header.jsx';
 import { useLanguage } from '../../context/LanguageContext';
 
-const statsCards = [
-    {
-        key: 'sales',
-        icon: faFolder,
-        value: '12',
-        label: { en: 'Total Sales', ar: 'إجمالي المبيعات' },
-        note: { en: '+2 this month', ar: '+2 هذا الشهر' },
-        wrapperClass: '',
-    },
-    {
-        key: 'earnings',
-        icon: faDollarSign,
-        value: '$5,200',
-        label: { en: 'Total Earnings', ar: 'إجمالي الأرباح' },
-        note: { en: '+12 from last month', ar: '+12 عن الشهر الماضي' },
-        wrapperClass: 'dollar',
-    },
-    {
-        key: 'tasks',
-        icon: faClock,
-        value: '3',
-        label: { en: 'Tasks Due', ar: 'المهام المستحقة' },
-        note: { en: 'Due this week', ar: 'مستحق هذا الأسبوع' },
-        wrapperClass: 'clock',
-    },
-    {
-        key: 'activity',
-        icon: faBell,
-        value: '5',
-        label: { en: 'Recent Activity', ar: 'النشاط الأخير' },
-        note: { en: 'Today', ar: 'اليوم' },
-        wrapperClass: 'bell',
-    },
-];
+const getStatsCards = (language, profitStats, profitLoading, profitError) => {
+    const formatCurrency = (amount) => {
+        if (profitLoading) {
+            return language === 'ar' ? '...جارٍ التحميل' : 'Loading...';
+        }
+        if (profitError) {
+            return language === 'ar' ? 'خطأ' : 'Error';
+        }
+        const value = Number(amount) || 0;
+        return `$${value.toFixed(2)}`;
+    };
+
+    return [
+        {
+            key: 'revenue',
+            icon: faDollarSign,
+            value: formatCurrency(profitStats.totalRevenue),
+            label: { en: 'Total Revenue', ar: 'إجمالي الإيرادات' },
+            note: { en: 'All-time sales', ar: 'إجمالي المبيعات الكلية' },
+            wrapperClass: 'dollar',
+        },
+        {
+            key: 'cost',
+            icon: faDollarSign,
+            value: formatCurrency(profitStats.totalCost),
+            label: { en: 'Total Cost', ar: 'إجمالي التكلفة' },
+            note: { en: 'All-time purchase cost', ar: 'إجمالي تكلفة المشتريات' },
+            wrapperClass: 'clock',
+        },
+        {
+            key: 'netProfit',
+            icon: faDollarSign,
+            value: formatCurrency(profitStats.netProfit),
+            label: { en: 'Net Profit', ar: 'صافي الربح' },
+            note: { en: 'Revenue - cost', ar: 'الإيرادات - التكلفة' },
+            wrapperClass: 'bell',
+        },
+        {
+            key: 'activity',
+            icon: faBell,
+            value: '5',
+            label: { en: 'Recent Activity', ar: 'النشاط الأخير' },
+            note: { en: 'Today', ar: 'اليوم' },
+            wrapperClass: 'bell',
+        },
+    ];
+};
 
 const projectCards = [
     {
         key: 'reports',
         icon: faFolder,
         iconStyles: { backgroundColor: '#e6f7ff', color: '#1890ff' },
-        title: { en: 'Reports', ar: 'التقارير' },
+        title: { en: 'Sales & Profit', ar: 'المبيعات والأرباح' },
         description: {
-            en: 'Automated weekly reports for inventory KPIs.',
-            ar: 'تقارير أسبوعية آلية لمؤشرات أداء المخزون.',
+            en: 'Overview of your sales performance and profit over time.',
+            ar: 'نظرة على أداء المبيعات والأرباح عبر الزمن.',
         },
-        deadline: { en: 'Due: Aug 30, 2023', ar: 'الموعد النهائي: 30 أغسطس 2023' },
+        deadline: { en: 'Updated from latest sales', ar: 'محدَّثة من أحدث المبيعات' },
         progress: { value: '65%', labelColor: '#52c41a' },
         fillColor: '#52c41a',
         fillWidth: '65%',
@@ -77,12 +91,12 @@ const projectCards = [
         key: 'supplier',
         icon: faMobile,
         iconStyles: { backgroundColor: '#f6ffed', color: '#52c41a' },
-        title: { en: 'Buy From Supplier', ar: 'الشراء من المورد' },
+        title: { en: 'Purchases & Stock', ar: 'المشتريات والمخزون' },
         description: {
-            en: 'Track purchase orders and supplier fulfillment.',
-            ar: 'تتبع أوامر الشراء وتنفيذ الموردين.',
+            en: 'Track purchases from suppliers and their impact on stock.',
+            ar: 'تتبع المشتريات من الموردين وتأثيرها على المخزون.',
         },
-        deadline: { en: 'Due: Sep 15, 2023', ar: 'الموعد النهائي: 15 سبتمبر 2023' },
+        deadline: { en: 'Updated from latest purchases', ar: 'محدَّثة من أحدث المشتريات' },
         progress: { value: '45%', labelColor: '#1890ff' },
         fillColor: '#1890ff',
         fillWidth: '45%',
@@ -95,97 +109,241 @@ const projectCards = [
 
 const actionButtons = [
     {
-        key: 'newProject',
-        label: { en: 'Start a New Project', ar: 'ابدأ مشروعًا جديدًا' },
+        key: 'sell',
+        label: { en: 'Sell to Customer', ar: 'بيع للعميل' },
         type: 'primary',
+        route: '/sell-to-customer',
     },
     {
-        key: 'viewProjects',
-        label: { en: 'View All Projects', ar: 'عرض جميع المشاريع' },
+        key: 'buy',
+        label: { en: 'Buy From Supplier', ar: 'الشراء من المورد' },
         type: 'secondary',
+        route: '/buy-from-supplier',
     },
 ];
 
-const projectTableColumns = [
-    { key: 'project', label: { en: 'Project', ar: 'المشروع' } },
-    { key: 'client', label: { en: 'Client', ar: 'العميل' } },
-    { key: 'status', label: { en: 'Status', ar: 'الحالة' } },
-    { key: 'progress', label: { en: 'Progress', ar: 'التقدم' } },
-    { key: 'dueDate', label: { en: 'Due Date', ar: 'تاريخ الاستحقاق' } },
-    { key: 'actions', label: { en: 'Actions', ar: 'الإجراءات' } },
+const modulesTableColumns = [
+    { key: 'section', label: { en: 'Section', ar: 'القسم' } },
+    { key: 'description', label: { en: 'Description', ar: 'الوصف' } },
+    { key: 'open', label: { en: 'Open', ar: 'فتح' } },
 ];
 
-const projectTableRows = [
+const modulesTableRows = [
     {
-        key: 'ecommerce',
-        project: {
-            name: { en: 'E-commerce Website', ar: 'موقع تجارة إلكترونية' },
-            desc: { en: 'Full stack development', ar: 'تطوير متكامل' },
+        key: 'products',
+        name: { en: 'Products', ar: 'المنتجات' },
+        description: {
+            en: 'Manage your product catalog, prices and barcodes.',
+            ar: 'إدارة قائمة المنتجات والأسعار والباركود.',
         },
-        client: { name: 'TechCorp Inc.', email: 'tech@techcorp.com' },
-        status: { label: { en: 'In Progress', ar: 'قيد التنفيذ' }, className: 'inProgress' },
-        progress: '65%',
-        progressColor: '#2563eb',
-        dueDate: { en: 'Mar 15, 2024', ar: '15 مارس 2024' },
+        route: '/projects',
     },
     {
-        key: 'brand',
-        project: {
-            name: { en: 'Brand Identity', ar: 'هوية العلامة' },
-            desc: { en: 'Logo and brand guidelines', ar: 'شعار ودليل هوية' },
+        key: 'stock',
+        name: { en: 'Stock Batches', ar: 'دفعات المخزون' },
+        description: {
+            en: 'Track batch quantities and expiry dates.',
+            ar: 'متابعة كميات الدُفعات وتواريخ الانتهاء.',
         },
-        client: { name: 'StartupXYZ', email: 'hello@startupxyz.com' },
-        status: { label: { en: 'Completed', ar: 'مكتمل' }, className: 'completed' },
-        progress: '100%',
-        progressColor: '#16a34a',
-        dueDate: { en: 'Feb 28, 2024', ar: '28 فبراير 2024' },
+        route: '/stock',
     },
     {
-        key: 'mobileApp',
-        project: {
-            name: { en: 'Mobile App Design', ar: 'تصميم تطبيق جوال' },
-            desc: { en: 'UI/UX design for iOS app', ar: 'تصميم واجهات لتطبيق iOS' },
+        key: 'customers',
+        name: { en: 'Customers', ar: 'العملاء' },
+        description: {
+            en: 'Store customer details for faster sales.',
+            ar: 'حفظ بيانات العملاء لتسريع عمليات البيع.',
         },
-        client: { name: 'FinanceApp Ltd.', email: 'contact@financeapp.com' },
-        status: { label: { en: 'Review', ar: 'قيد المراجعة' }, className: 'review' },
-        progress: '85%',
-        progressColor: '#d97706',
-        dueDate: { en: 'Mar 20, 2024', ar: '20 مارس 2024' },
+        route: '/customers',
+    },
+    {
+        key: 'suppliers',
+        name: { en: 'Suppliers', ar: 'الموردون' },
+        description: {
+            en: 'Manage your suppliers and purchase terms.',
+            ar: 'إدارة الموردين وشروط الشراء.',
+        },
+        route: '/suppliers',
+    },
+    {
+        key: 'salesHistory',
+        name: { en: 'Sales History', ar: 'سجل المبيعات' },
+        description: {
+            en: 'Review previous customer bills and totals.',
+            ar: 'مراجعة فواتير المبيعات السابقة والإجماليات.',
+        },
+        route: '/sales-history',
+    },
+    {
+        key: 'purchasesHistory',
+        name: { en: 'Purchases History', ar: 'سجل المشتريات' },
+        description: {
+            en: 'Review purchase bills and supplier costs.',
+            ar: 'مراجعة فواتير المشتريات وتكاليف الموردين.',
+        },
+        route: '/purchases-history',
+    },
+    {
+        key: 'returns',
+        name: { en: 'Returns', ar: 'المرتجعات' },
+        description: {
+            en: 'Handle returned items and stock adjustments.',
+            ar: 'التعامل مع المرتجعات وتعديلات المخزون.',
+        },
+        route: '/returns',
     },
 ];
 
-const summaryCards = [
-    {
-        key: 'hours',
-        icon: faClock,
-        className: 'blue',
-        title: { en: 'Hours This Month', ar: 'ساعات هذا الشهر' },
-        value: '142',
-        note: { en: '+18 hours from last month', ar: '+18 ساعة عن الشهر الماضي' },
-        color: '#2563eb',
-    },
-    {
-        key: 'clients',
-        icon: faUser,
-        className: 'green',
-        title: { en: 'Active Clients', ar: 'العملاء النشطون' },
-        value: '8',
-        note: { en: '2 new clients this month', ar: 'عميلان جديدان هذا الشهر' },
-        color: '#16a34a',
-    },
-    {
-        key: 'rating',
-        icon: faStar,
-        className: 'purple',
-        title: { en: 'Average Rating', ar: 'متوسط التقييم' },
-        value: '4.9',
-        note: { en: 'Based on 24 reviews', ar: 'استنادًا إلى 24 مراجعة' },
-        color: '#8b5cf6',
-    },
-];
+const getSummaryCards = (language, entityCounts, countsLoading, countsError) => {
+    const formatCount = (value) => {
+        if (countsLoading) {
+            return language === 'ar' ? '...جارٍ التحميل' : 'Loading...';
+        }
+        if (countsError) {
+            return language === 'ar' ? 'خطأ' : 'Error';
+        }
+        return String(value ?? 0);
+    };
+
+    const totalContacts = (entityCounts.customers || 0) + (entityCounts.suppliers || 0);
+
+    return [
+        {
+            key: 'products',
+            icon: faFolder,
+            className: 'blue',
+            title: { en: 'Total Products', ar: 'إجمالي المنتجات' },
+            value: formatCount(entityCounts.products),
+            note: { en: 'From products list', ar: 'من قائمة المنتجات' },
+            color: '#2563eb',
+        },
+        {
+            key: 'batches',
+            icon: faClock,
+            className: 'green',
+            title: { en: 'Stock Batches', ar: 'دفعات المخزون' },
+            value: formatCount(entityCounts.stockBatches),
+            note: { en: 'Tracked in stock', ar: 'متابعة في المخزون' },
+            color: '#16a34a',
+        },
+        {
+            key: 'contacts',
+            icon: faUser,
+            className: 'purple',
+            title: { en: 'Customers & Suppliers', ar: 'العملاء والموردون' },
+            value: formatCount(totalContacts),
+            note: { en: 'Total contacts', ar: 'إجمالي جهات الاتصال' },
+            color: '#8b5cf6',
+        },
+    ];
+};
 
 export default function Overview() {
     const { language } = useLanguage();
+    const navigate = useNavigate();
+    const [profitStats, setProfitStats] = useState({ totalRevenue: 0, totalCost: 0, netProfit: 0 });
+    const [profitLoading, setProfitLoading] = useState(false);
+    const [profitError, setProfitError] = useState(null);
+    const [entityCounts, setEntityCounts] = useState({
+        products: 0,
+        customers: 0,
+        suppliers: 0,
+        stockBatches: 0,
+    });
+    const [countsLoading, setCountsLoading] = useState(false);
+    const [countsError, setCountsError] = useState(null);
+    const [monthlyStats, setMonthlyStats] = useState([]);
+    const [monthlyLoading, setMonthlyLoading] = useState(false);
+    const [monthlyError, setMonthlyError] = useState(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const fetchProfitStats = async () => {
+            try {
+                setProfitLoading(true);
+                const res = await fetch('http://localhost:3000/api/stats/profit', {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+                if (!res.ok) throw new Error('Failed to fetch profit stats');
+                const data = await res.json();
+                setProfitStats({
+                    totalRevenue: data.totalRevenue || 0,
+                    totalCost: data.totalCost || 0,
+                    netProfit: data.netProfit || 0,
+                });
+                setProfitError(null);
+            } catch (err) {
+                console.error(err);
+                setProfitError(err.message || 'Failed to load profit stats');
+            } finally {
+                setProfitLoading(false);
+            }
+        };
+
+        const fetchCounts = async () => {
+            try {
+                setCountsLoading(true);
+                const headers = { 'Authorization': `Bearer ${token}` };
+                const [productsRes, customersRes, suppliersRes, stockRes] = await Promise.all([
+                    fetch('http://localhost:3000/api/products/list', { headers }),
+                    fetch('http://localhost:3000/api/customers/list', { headers }),
+                    fetch('http://localhost:3000/api/suppliers/list', { headers }),
+                    fetch('http://localhost:3000/api/stock/batches/list', { headers }),
+                ]);
+
+                if (!productsRes.ok || !customersRes.ok || !suppliersRes.ok || !stockRes.ok) {
+                    throw new Error('Failed to fetch overview counts');
+                }
+
+                const [products, customers, suppliers, stockBatches] = await Promise.all([
+                    productsRes.json(),
+                    customersRes.json(),
+                    suppliersRes.json(),
+                    stockRes.json(),
+                ]);
+
+                setEntityCounts({
+                    products: Array.isArray(products) ? products.length : 0,
+                    customers: Array.isArray(customers) ? customers.length : 0,
+                    suppliers: Array.isArray(suppliers) ? suppliers.length : 0,
+                    stockBatches: Array.isArray(stockBatches) ? stockBatches.length : 0,
+                });
+                setCountsError(null);
+            } catch (err) {
+                console.error(err);
+                setCountsError(err.message || 'Failed to load overview counts');
+            } finally {
+                setCountsLoading(false);
+            }
+        };
+
+        const fetchMonthlyStats = async () => {
+            try {
+                setMonthlyLoading(true);
+                const res = await fetch('http://localhost:3000/api/stats/monthly-profit?months=6', {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+                if (!res.ok) throw new Error('Failed to fetch monthly profit stats');
+                const data = await res.json();
+                setMonthlyStats(Array.isArray(data) ? data : []);
+                setMonthlyError(null);
+            } catch (err) {
+                console.error(err);
+                setMonthlyError(err.message || 'Failed to load monthly profit stats');
+            } finally {
+                setMonthlyLoading(false);
+            }
+        };
+
+        fetchProfitStats();
+        fetchCounts();
+        fetchMonthlyStats();
+    }, []);
+
+    const statsCards = getStatsCards(language, profitStats, profitLoading, profitError);
+    const summaryCards = getSummaryCards(language, entityCounts, countsLoading, countsError);
     const greetings =
         language === 'ar'
             ? <>مرحباً بعودتك، <span className={style.highlight}>Zeiad</span>! 👋</>
@@ -222,6 +380,7 @@ export default function Overview() {
                         <button
                             key={btn.key}
                             className={`${style.btn} ${btn.type === 'primary' ? style.primaryBtn : style.secondaryBtn}`}
+                            onClick={() => btn.route && navigate(btn.route)}
                         >
                             {btn.type === 'primary' && <FontAwesomeIcon icon={faPlus} />}
                             {btn.label[language]}
@@ -231,7 +390,7 @@ export default function Overview() {
             </div>
 
             <div className={style.projectsHeader}>
-                <h3>{language === 'ar' ? 'مشاريعي' : 'My Projects'}</h3>
+                <h3>{language === 'ar' ? 'نظرة عامة على النظام' : 'System Overview'}</h3>
                 <a href="#" className={style.viewAllLink}>
                     {language === 'ar' ? 'عرض الكل' : 'View All'} <FontAwesomeIcon icon={faChevronRight} />
                 </a>
@@ -277,54 +436,57 @@ export default function Overview() {
             </section>
 
             <section className={style.chartSection}>
-                <div><MonthlyEarnings /></div>
-                <div><TaskDistribution /></div>
+                <div>
+                    <MonthlyEarnings
+                        data={monthlyStats}
+                        loading={monthlyLoading}
+                        error={monthlyError}
+                    />
+                </div>
+                <div>
+                    <TaskDistribution
+                        data={monthlyStats}
+                        loading={monthlyLoading}
+                        error={monthlyError}
+                    />
+                </div>
             </section>
 
             <section className={style.currentProjects}>
     <div className={style.projectsHeader}>
-                    <h3>{language === 'ar' ? 'المشاريع الحالية' : 'Current Projects'}</h3>
+                    <h3>{language === 'ar' ? 'الوحدات النشطة' : 'Active Modules'}</h3>
         <button className={style.newProjectBtn}>
-                        <FontAwesomeIcon icon={faPlus} /> {language === 'ar' ? 'مشروع جديد' : 'New Project'}
+                        <FontAwesomeIcon icon={faPlus} /> {language === 'ar' ? 'وحدة جديدة' : 'New Module'}
         </button>
     </div>
 
     <table className={style.projectsTable}>
         <thead>
-            <tr>
-                            {projectTableColumns.map((column) => (
+        <tr>
+                            {modulesTableColumns.map((column) => (
                                 <th key={column.key}>{column.label[language]}</th>
                             ))}
             </tr>
         </thead>
         <tbody>
-                        {projectTableRows.map((row) => (
+                        {modulesTableRows.map((row) => (
                             <tr key={row.key}>
                 <td>
                     <div className={style.projectInfo}>
-                                        <div className={style.projectName}>{row.project.name[language]}</div>
-                                        <div className={style.projectDesc}>{row.project.desc[language]}</div>
+                                        <div className={style.projectName}>{row.name[language]}</div>
                     </div>
                 </td>
                 <td>
-                    <div className={style.clientInfo}>
-                                        <div>{row.client.name}</div>
-                                        <small>{row.client.email}</small>
-                    </div>
+                    <div className={style.projectDesc}>{row.description[language]}</div>
                 </td>
-                                <td><span className={`${style.status} ${style[row.status.className]}`}>{row.status.label[language]}</span></td>
-                <td>
-                    <div className={style.progressWrapper}>
-                        <div className={style.progressBarTrack}>
-                                            <div className={style.progressBarFill} style={{ width: row.progress, backgroundColor: row.progressColor }}></div>
-                        </div>
-                                        <span>{row.progress}</span>
-                    </div>
-                </td>
-                                <td>{row.dueDate[language]}</td>
                 <td className={style.actions}>
-                    <FontAwesomeIcon icon={faChevronRight} className={style.actionIcon} />
-                    <FontAwesomeIcon icon={faEllipsisV} className={style.actionIcon} />
+                    <button
+                        type="button"
+                        className={style.newProjectBtn}
+                        onClick={() => navigate(row.route)}
+                    >
+                        {language === 'ar' ? 'الانتقال' : 'Go'}
+                    </button>
                 </td>
             </tr>
                         ))}

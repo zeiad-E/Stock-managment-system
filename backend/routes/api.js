@@ -46,10 +46,12 @@ router.post('/supplier-bills/buy', verifyToken, transController.createPurchase);
 // --- Returns (The Fixed API) ---
 router.post('/returns', verifyToken, returnController.createReturn);
 
-
 // NEW: Bill Lists (History)
 router.get('/customer-bills/list', verifyToken, transController.getCustomerBills);
 router.get('/supplier-bills/list', verifyToken, transController.getSupplierBills);
 
+// --- Statistics ---
+router.get('/stats/profit', verifyToken, transController.getProfitStats);
+router.get('/stats/monthly-profit', verifyToken, transController.getMonthlyProfitStats);
 
 module.exports = router;

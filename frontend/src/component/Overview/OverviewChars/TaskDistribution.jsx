@@ -10,22 +10,35 @@ import { useLanguage } from "../../../context/LanguageContext";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const TaskDistribution = () => {
+const TaskDistribution = ({ data = [], loading, error }) => {
   const { language } = useLanguage();
 
-  const data = useMemo(
-    () => ({
-      labels: language === "ar" ? ["التصميم", "التطوير"] : ["Design", "Development"],
+  const chartData = useMemo(() => {
+    let sales = 0;
+    let purchases = 0;
+
+    if (Array.isArray(data) && data.length > 0) {
+      const latest = data[data.length - 1];
+      sales = Number(latest.totalRevenue || 0);
+      purchases = Number(latest.totalCost || 0);
+    }
+
+    if (sales === 0 && purchases === 0) {
+      sales = 1;
+      purchases = 1;
+    }
+
+    return {
+      labels: language === "ar" ? ["المبيعات", "المشتريات"] : ["Sales", "Purchases"],
       datasets: [
         {
-          data: [40, 60],
+          data: [sales, purchases],
           backgroundColor: ["#8b5cf6", "#06b6d4"],
           borderWidth: 1,
         },
       ],
-    }),
-    [language],
-  );
+    };
+  }, [data, language]);
 
   const options = useMemo(
     () => ({
@@ -37,7 +50,7 @@ const TaskDistribution = () => {
         },
         title: {
           display: true,
-          text: language === "ar" ? "توزيع المهام" : "Task Distribution",
+          text: language === "ar" ? "نسبة المبيعات إلى المشتريات" : "Sales vs Purchases",
         },
       },
     }),
@@ -46,7 +59,7 @@ const TaskDistribution = () => {
 
   return (
     <div className="card">
-      <Pie data={data} options={options} />
+      <Pie data={chartData} options={options} />
       <p className="subtitle">{language === "ar" ? "الشهر الحالي" : "Current month"}</p>
     </div>
   );

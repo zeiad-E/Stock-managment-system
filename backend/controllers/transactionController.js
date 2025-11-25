@@ -172,3 +172,108 @@ exports.getSupplierBills = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch supplier bills", details: err.message });
     }
 };
+
+// 3. Profit Statistics (Total Revenue, Total Cost, Net Profit)
+exports.getProfitStats = async (req, res) => {
+    try {
+        const [salesAgg] = await CustomerBill.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: { $ifNull: ["$grandTotal", 0] } },
+                },
+            },
+        ]);
+
+        const [purchaseAgg] = await SupplierBill.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalCost: { $sum: { $ifNull: ["$grandTotal", 0] } },
+                },
+            },
+        ]);
+
+        const totalRevenue = salesAgg?.totalRevenue || 0;
+        const totalCost = purchaseAgg?.totalCost || 0;
+        const netProfit = totalRevenue - totalCost;
+
+        res.json({ totalRevenue, totalCost, netProfit });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to compute profit statistics", details: err.message });
+    }
+};
+
+// 4. Monthly Profit Statistics (per month revenue, cost, net profit)
+exports.getMonthlyProfitStats = async (req, res) => {
+    try {
+        const months = parseInt(req.query.months, 10) || 6;
+
+        const salesAgg = await CustomerBill.aggregate([
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                    },
+                    totalRevenue: { $sum: { $ifNull: ["$grandTotal", 0] } },
+                },
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } },
+        ]);
+
+        const purchasesAgg = await SupplierBill.aggregate([
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                    },
+                    totalCost: { $sum: { $ifNull: ["$grandTotal", 0] } },
+                },
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } },
+        ]);
+
+        const byMonth = {};
+
+        for (const entry of salesAgg) {
+            const { year, month } = entry._id;
+            const key = `${year}-${String(month).padStart(2, "0")}`;
+            if (!byMonth[key]) {
+                byMonth[key] = { year, month, totalRevenue: 0, totalCost: 0 };
+            }
+            byMonth[key].totalRevenue = entry.totalRevenue || 0;
+        }
+
+        for (const entry of purchasesAgg) {
+            const { year, month } = entry._id;
+            const key = `${year}-${String(month).padStart(2, "0")}`;
+            if (!byMonth[key]) {
+                byMonth[key] = { year, month, totalRevenue: 0, totalCost: 0 };
+            }
+            byMonth[key].totalCost = entry.totalCost || 0;
+        }
+
+        let result = Object.values(byMonth).sort((a, b) => {
+            if (a.year === b.year) return a.month - b.month;
+            return a.year - b.year;
+        });
+
+        if (months > 0 && result.length > months) {
+            result = result.slice(result.length - months);
+        }
+
+        result = result.map((item) => ({
+            year: item.year,
+            month: item.month,
+            totalRevenue: item.totalRevenue,
+            totalCost: item.totalCost,
+            netProfit: item.totalRevenue - item.totalCost,
+        }));
+
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to compute monthly profit statistics", details: err.message });
+    }
+};
