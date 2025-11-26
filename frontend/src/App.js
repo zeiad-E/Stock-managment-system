@@ -1,5 +1,6 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Menu from './component/Menu/Menu.jsx';
 import Overview from './component/Overview/Overview.jsx';
 // import Projects from './component/Projects/Projects.jsx';
@@ -19,31 +20,54 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 
 const AppContent = () => {
   const { language } = useLanguage();
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('token'));
+
+  useEffect(() => {
+    const handleStorage = () => {
+      setIsAuthenticated(!!localStorage.getItem('token'));
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    window.dispatchEvent(new Event('storage'));
+  };
 
   return (
     <Router>
-      <div className={`model ${language === 'ar' ? 'model-rtl' : 'model-ltr'}`}>
-        <aside className='sidebar'>
-          <Menu/>
-        </aside>
-        <div className='content'>
-          <Routes>
-            <Route path="/" element={<Overview />} />
-            <Route path="/projects" element={<Products />} />
-            <Route path="/settings" element={<ProfileSettings />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path='/suppliers' element={<Suppliers/>}/>
-            <Route path='/customers' element={<Customers/>}/>
-            <Route path='/stock' element={<Stock/>}/>
-            <Route path='/buy-from-supplier' element={<BuyFromSupplier/>}/>
-            <Route path='/sell-to-customer' element={<SellToCustomer/>}/>
-            <Route path='/returns' element={<Returns/>}/>
-            <Route path='/sales-history' element={<SalesHistory/>}/>
-            <Route path='/purchases-history' element={<PurchasesHistory/>}/>
-          </Routes>
+      {isAuthenticated ? (
+        <div className={`model ${language === 'ar' ? 'model-rtl' : 'model-ltr'}`}>
+          <aside className='sidebar'>
+            <Menu />
+          </aside>
+          <div className='content'>
+            <Routes>
+              <Route path="/" element={<Overview isAuthenticated={isAuthenticated} onLogout={handleLogout} />} />
+              <Route path="/projects" element={<Products />} />
+              <Route path="/settings" element={<ProfileSettings />} />
+              <Route path='/suppliers' element={<Suppliers/>}/>
+              <Route path='/customers' element={<Customers/>}/>
+              <Route path='/stock' element={<Stock/>}/>
+              <Route path='/buy-from-supplier' element={<BuyFromSupplier/>}/>
+              <Route path='/sell-to-customer' element={<SellToCustomer/>}/>
+              <Route path='/returns' element={<Returns/>}/>
+              <Route path='/sales-history' element={<SalesHistory/>}/>
+              <Route path='/purchases-history' element={<PurchasesHistory/>}/>
+              <Route path="/login" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
         </div>
-      </div>
+      ) : (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      )}
     </Router>
   );
 }

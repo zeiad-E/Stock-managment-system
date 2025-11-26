@@ -8,7 +8,7 @@ import { useLanguage } from '../../context/LanguageContext';
 
 const copyMap = {
     en: {
-        headerName: 'Returns & Refunds',
+        headerName: 'Returns',
         pageTitle: 'Process Returns',
         subtitle: 'Handle customer or supplier returns and update stock',
         typeLabel: 'Type',
@@ -19,7 +19,6 @@ const copyMap = {
         supplierLabel: 'Supplier',
         supplierPlaceholder: 'Select Supplier',
         invoiceLabel: 'Related Invoice ID',
-        refundLabel: 'Refund Amount',
         notesLabel: 'Notes',
         itemsTitle: 'Items',
         productPlaceholder: 'Select Product',
@@ -31,7 +30,7 @@ const copyMap = {
         failure: 'Return processing failed!',
     },
     ar: {
-        headerName: 'المرتجعات والمبالغ المستردة',
+        headerName: 'المرتجعات',
         pageTitle: 'معالجة المرتجعات',
         subtitle: 'تولَّ مرتجعات العملاء أو الموردين وحدّث المخزون',
         typeLabel: 'النوع',
@@ -42,7 +41,6 @@ const copyMap = {
         supplierLabel: 'المورد',
         supplierPlaceholder: 'اختر المورد',
         invoiceLabel: 'رقم الفاتورة المرتبط',
-        refundLabel: 'مبلغ الاسترداد',
         notesLabel: 'الملاحظات',
         itemsTitle: 'العناصر',
         productPlaceholder: 'اختر المنتج',
@@ -59,19 +57,19 @@ const Returns = () => {
     const [customers, setCustomers] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const [products, setProducts] = useState([]);
+
     const [formData, setFormData] = useState({
         type: 'customer',
         customerId: '',
         supplierId: '',
         relatedInvoiceId: '',
-        refundAmount: 0,
         notes: '',
         items: [{ productId: '', quantity: 0, reason: '' }]
     });
+
     const token = localStorage.getItem('token');
     const { language } = useLanguage();
     const copy = useMemo(() => copyMap[language], [language]);
-    // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InplaWFkIiwiaWF0IjoxNzYzODMxMzI1LCJleHAiOjE3NjM5MTc3MjV9.Z4ji_FFgpCTz_3Ly8SCFoa8T2SFGICUk5D8laAitazs";  // Hardcoded for now
 
     useEffect(() => {
         fetchCustomers();
@@ -82,34 +80,28 @@ const Returns = () => {
     const fetchCustomers = async () => {
         try {
             const res = await axios.get('http://localhost:3000/api/customers/list', {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` }
             });
             setCustomers(res.data);
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     };
 
     const fetchSuppliers = async () => {
         try {
             const res = await axios.get('http://localhost:3000/api/suppliers/list', {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` }
             });
             setSuppliers(res.data);
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     };
 
     const fetchProducts = async () => {
         try {
             const res = await axios.get('http://localhost:3000/api/products/list', {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` }
             });
             setProducts(res.data);
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     };
 
     const handleChange = (e) => {
@@ -136,24 +128,27 @@ const Returns = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
-            await axios.post('http://localhost:3000/api/returns', formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+            // Remove refundAmount from payload
+            const payload = { ...formData };
+            delete payload.refundAmount;
+
+            await axios.post('http://localhost:3000/api/returns', payload, {
+                headers: { Authorization: `Bearer ${token}` }
             });
+
             alert(copy.success);
-            // Reset form
+
             setFormData({
                 type: 'customer',
                 customerId: '',
                 supplierId: '',
                 relatedInvoiceId: '',
-                refundAmount: 0,
                 notes: '',
                 items: [{ productId: '', quantity: 0, reason: '' }]
             });
+
         } catch (err) {
             console.error(err);
             alert(copy.failure);
@@ -162,7 +157,8 @@ const Returns = () => {
 
     return (
         <div className={style.returnsContainer}>
-            <Header name={copy.headerName}/>
+            <Header name={copy.headerName} />
+
             <div className={style.returnsHeader}>
                 <div>
                     <h1 className={style.returnsTitle}>{copy.pageTitle}</h1>
@@ -171,6 +167,7 @@ const Returns = () => {
             </div>
 
             <form className={style.returnsForm} onSubmit={handleSubmit}>
+                {/* Type */}
                 <div className={style.formGroup}>
                     <label>{copy.typeLabel}</label>
                     <select name="type" value={formData.type} onChange={handleChange} required>
@@ -179,6 +176,7 @@ const Returns = () => {
                     </select>
                 </div>
 
+                {/* Customer or Supplier */}
                 {formData.type === 'customer' ? (
                     <>
                         <div className={style.formGroup}>
@@ -188,6 +186,7 @@ const Returns = () => {
                                 {customers.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                             </select>
                         </div>
+
                         <div className={style.formGroup}>
                             <label>{copy.invoiceLabel}</label>
                             <input type="text" name="relatedInvoiceId" value={formData.relatedInvoiceId} onChange={handleChange} required />
@@ -203,29 +202,31 @@ const Returns = () => {
                     </div>
                 )}
 
-                <div className={style.formGroup}>
-                    <label>{copy.refundLabel}</label>
-                    <input type="number" name="refundAmount" value={formData.refundAmount} onChange={handleChange} required />
-                </div>
-
+                {/* Notes */}
                 <div className={style.formGroup}>
                     <label>{copy.notesLabel}</label>
                     <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
                 </div>
 
+                {/* Items */}
                 <div className={style.itemsSection}>
                     <h3>{copy.itemsTitle}</h3>
+
                     {formData.items.map((item, index) => (
                         <div key={index} className={style.itemRow}>
                             <select name="productId" value={item.productId} onChange={(e) => handleItemChange(index, e)} required>
                                 <option value="">{copy.productPlaceholder}</option>
                                 {products.map(p => <option key={p._id} value={p._id}>{p.name}</option>)}
                             </select>
-                            <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} placeholder={copy.quantityPlaceholder} required />
-                            <input type="text" name="reason" value={item.reason} onChange={(e) => handleItemChange(index, e)} placeholder={copy.reasonPlaceholder} required />
+
+                            <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} required />
+
+                            <input type="text" name="reason" value={item.reason} onChange={(e) => handleItemChange(index, e)} required />
+
                             <FontAwesomeIcon icon={faTrash} className={style.removeIcon} onClick={() => removeItem(index)} />
                         </div>
                     ))}
+
                     <button type="button" className={style.addItemBtn} onClick={addItem}>
                         <FontAwesomeIcon icon={faPlus} /> {copy.addItem}
                     </button>

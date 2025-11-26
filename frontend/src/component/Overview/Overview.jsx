@@ -238,7 +238,7 @@ const getSummaryCards = (language, entityCounts, countsLoading, countsError) => 
     ];
 };
 
-export default function Overview() {
+export default function Overview({ isAuthenticated, onLogout }) {
     const { language } = useLanguage();
     const navigate = useNavigate();
     const [profitStats, setProfitStats] = useState({ totalRevenue: 0, totalCost: 0, netProfit: 0 });
@@ -355,7 +355,11 @@ export default function Overview() {
 
     return (
         <div className={style.overviewContainer}>
-            <Header name={language === 'ar' ? 'نظرة عامة على لوحة التحكم' : 'Dashboard Overview'} />
+            <Header
+                name={language === 'ar' ? 'نظرة عامة على لوحة التحكم' : 'Dashboard Overview'}
+                isAuthenticated={isAuthenticated}
+                onLogout={onLogout}
+            />
 
             <div className={style.welcomeSection}>
                 <h1>{greetings}</h1>
